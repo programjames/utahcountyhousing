@@ -37,80 +37,97 @@ async function setData(serial = 360910003, year = 2020) {
 setData("22:015:0002");
 
 async function EventListener(event = null) {
-  if (event != null) {
-    event.preventDefault();
-  }
-  let houseNum = document.getElementById("house-num").value;
-  let dir = document.getElementById("dir").value;
-  let streetName = document.getElementById("street-name").value;
-  let streetType = document.getElementById("street-type").value;
-  let loc = document.getElementById("loc").value;
-  if (houseNum === "" || streetName === "" || streetType === "" || loc === "") {
-    return;
-  }
-  const url = "http://143.110.130.203:8080/http://www.utahcounty.gov/LandRecords/AddressSearch.asp?av_house=" + houseNum + "&av_dir=" + dir + "&av_street=" + streetName + "&street_type=" + streetType + "&av_location=" + loc + "&av_valid=...&Submit=++++Search++++"
-  const response = await fetch(url);
-  const data = await response.text();
-
-  let re = /(?<=av_serial=)(.*)(?=">)/
-  let matches = data.match(re);
-  const serial = matches[0];
-  await setData(serial, 2020);
-
-  document.getElementById("results").style.display = "block";
-  document.getElementById("loading").style.display = "block";
-
-  dataTable = new google.visualization.DataTable();
-  dataTable.addColumn('string', 'Year');
-  dataTable.addColumn('number', 'Value');
-  dataTable.addColumn({
-    'type': 'string',
-    'role': 'tooltip',
-    'p': {
-      'html': true
+  var data;
+  var serial;
+  try {
+    if (event != null) {
+      event.preventDefault();
     }
-  });
-  console.log(data);
-  var tabledata = [];
-  for (let year = 2000; year <= 2020; year++) {
-    let c1 = year.toString();
-    let dat = await getData(serial, year);
-    let c2 = parseInt(dat[2].substring(1).replace(",", ""));
-    let c3 = "<div class='tooltip'>";
-    c3 += "<p class='info'><span class='bold'>Owner:</span> " + dat[0] + "</p>";
-    c3 += "</div>";
-    tabledata.push([c1, c2, c3]);
+    let houseNum = document.getElementById("house-num").value;
+    let dir = document.getElementById("dir").value;
+    let streetName = document.getElementById("street-name").value;
+    let streetType = document.getElementById("street-type").value;
+    let loc = document.getElementById("loc").value;
+    if (houseNum === "" || streetName === "" || streetType === "" || loc === "") {
+      return;
+    }
+    const url = "http://143.110.130.203:8080/http://www.utahcounty.gov/LandRecords/AddressSearch.asp?av_house=" + houseNum + "&av_dir=" + dir + "&av_street=" + streetName + "&street_type=" + streetType + "&av_location=" + loc + "&av_valid=...&Submit=++++Search++++"
+    const response = await fetch(url);
+    data = await response.text();
+
+    let re = /(?<=av_serial=)(.*)(?=">)/;
+    let matches = data.match(re);
+    serial = matches[0];
+    await setData(serial, 2020);
+
+    document.getElementById("results").style.display = "block";
+    document.getElementById("loading").style.display = "block";
+    document.getElementById("valueChart").style.display = "none";
+    document.getElementById("error").style.display = "none";
+  } catch (err) {
+    document.getElementById("error").style.display = "block";
+    console.log(err.message);
   }
-  dataTable.addRows(tabledata);
-  var options = {
-    focusTarget: 'datum',
-    tooltip: {
-      isHtml: true
-    },
-    legend: 'none',
-    backgroundColor: "none",
-    title: 'House Value Over Time',
-    curveType: 'none',
-    legend: {
-      position: 'bottom'
-    },
-    hAxis: {
-      maxAlternation: 1,
-    },
-    vAxis: {
-      gridlines: {
-        count: -1
+  try {
+    dataTable = new google.visualization.DataTable();
+    dataTable.addColumn('string', 'Year');
+    dataTable.addColumn('number', 'Value');
+    dataTable.addColumn({
+      'type': 'string',
+      'role': 'tooltip',
+      'p': {
+        'html': true
       }
-    },
-    chartArea: {
-      top: 100,
-      bottom: 100,
-      height: '60%'
+    });
+    var tabledata = [];
+
+    re = /(?<=\<td nowrap\>\<span class="style1" \>)(.*)(?=\.\.\.\<\/span\>\<\/td\>)/;
+    matches = data.match(re);
+    for (let year = Math.max(2000, parseInt(matches[0])); year <= 2020; year++) {
+      let c1 = year.toString();
+      let dat = await getData(serial, year);
+      let c2 = parseInt(dat[2].substring(1).replace(",", ""));
+      let c3 = "<div class='tooltip'>";
+      c3 += "<p class='info'><span class='bold'>Owner:</span> " + dat[0] + "</p>";
+      c3 += "</div>";
+      tabledata.push([c1, c2, c3]);
     }
-  };
-  var chart = new google.visualization.LineChart(document.getElementById('valueChart'));
-  chart.draw(dataTable, options);
-  document.getElementById("loading").style.display = "none";
+    dataTable.addRows(tabledata);
+    var options = {
+      focusTarget: 'datum',
+      tooltip: {
+        isHtml: true
+      },
+      legend: 'none',
+      backgroundColor: "none",
+      title: 'House Value Over Time',
+      curveType: 'none',
+      legend: {
+        position: 'bottom'
+      },
+      hAxis: {
+        maxAlternation: 1,
+      },
+      vAxis: {
+        gridlines: {
+          count: -1
+        }
+      },
+      chartArea: {
+        top: 100,
+        bottom: 100,
+        height: '60%'
+      }
+    };
+    document.getElementById("valueChart").style.display = "block";
+    var chart = new google.visualization.LineChart(document.getElementById('valueChart'));
+    chart.draw(dataTable, options);
+    document.getElementById("loading").style.display = "none";
+    document.getElementById("error2").style.display = "none";
+  } catch (err) {
+    document.getElementById("error2").style.display = "block";
+    console.log(err);
+  }
 }
 
 document.getElementById("submit-btn").addEventListener("click", EventListener);

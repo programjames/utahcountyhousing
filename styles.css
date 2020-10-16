@@ -119,6 +119,11 @@
   text-decoration: none;
 }
 
+.error {
+  color: red;
+  display: none;
+}
+
 @media only screen and (min-width: 500px) {
   #searchForm {
     align-items: center;
