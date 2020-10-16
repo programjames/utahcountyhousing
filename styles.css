@@ -1,0 +1,135 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.title {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+}
+
+.title div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title img {
+  height: 3rem;
+  margin: 1rem;
+}
+
+.title h1 {
+  margin: 0;
+  font-family: Times New Roman;
+  font-size: 24pt;
+  font-weight: normal;
+}
+
+.title h2 {
+  margin: 0;
+  font-family: Times New Roman;
+  font-size: 14pt;
+  font-weight: normal;
+}
+
+#searchForm {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+}
+
+.input-group {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.input {
+  width: 8rem;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.submit-div {
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 0;
+}
+
+.submit-btn {
+  margin-right: 1rem;
+  width: 8rem;
+  margin-top: 1rem;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+#results {
+  margin-top: 2rem;
+  display: none;
+  background: #8ec5ed;
+}
+
+.info {
+  text-transform: capitalize;
+  padding: 1rem;
+}
+
+#valueChart {
+  width: 100%;
+  height: 500px;
+}
+
+#body-container {
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  position: relative;
+}
+
+.footer {
+  width: 100%;
+  background-color: #1c8adb;
+  color: #fff;
+  text-align: center;
+  padding: 0;
+  margin: 0;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  clear: both;
+  position: absolute;
+  bottom: 0;
+}
+
+.footer a {
+  color: inherit;
+  text-decoration: none;
+}
+
+@media only screen and (min-width: 500px) {
+  #searchForm {
+    align-items: center;
+  }
+
+  .input-group {
+    width: 300px;
+    padding-right: 0;
+  }
+
+  .submit-btn {
+    margin-right: 0;
+  }
+}
