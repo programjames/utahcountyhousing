@@ -3,7 +3,9 @@ google.charts.load('current', {
 });
 
 async function getData(serial = 360910003, year = 2020) {
-  const url = "http://143.110.130.203:8080/http://www.utahcounty.gov/LandRecords/PropertyValues.asp?av_serial=" + serial + "&av_year=" + year;
+
+  // Chrome blocks no-cors requests, so for now use https://cors-anywhere.herokuapp.com/ to bypass it.
+  const url = "https://cors-anywhere.herokuapp.com/http://www.utahcounty.gov/LandRecords/PropertyValues.asp?av_serial=" + serial + "&av_year=" + year;
   const response = await fetch(url);
   const data = await response.text();
 
@@ -51,7 +53,7 @@ async function EventListener(event = null) {
     if (houseNum === "" || streetName === "" || streetType === "" || loc === "") {
       return;
     }
-    const url = "http://143.110.130.203:8080/http://www.utahcounty.gov/LandRecords/AddressSearch.asp?av_house=" + houseNum + "&av_dir=" + dir + "&av_street=" + streetName + "&street_type=" + streetType + "&av_location=" + loc + "&av_valid=...&Submit=++++Search++++"
+    const url = "https://cors-anywhere.herokuapp.com/http://www.utahcounty.gov/LandRecords/AddressSearch.asp?av_house=" + houseNum + "&av_dir=" + dir + "&av_street=" + streetName + "&street_type=" + streetType + "&av_location=" + loc + "&av_valid=...&Submit=++++Search++++"
     const response = await fetch(url);
     data = await response.text();
 
